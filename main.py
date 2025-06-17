@@ -50,3 +50,25 @@ class AnimalAPIClient:
 
         except aiohttp.ClientError as e:
             raise
+    async def get_animals_page(self, page: int = 1) -> Dict[str, Any]:
+        return await self._make_request(
+            "GET",
+            "/animals/v1/animals",
+            params={"page": page}
+        )
+
+    async def get_animal_details(self, animal_id: str) -> Dict[str, Any]:
+        return await self._make_request(
+            "GET",
+            f"/animals/v1/animals/{animal_id}"
+        )
+
+    async def post_animals_to_home(self, animals: List[Dict[str, Any]]) -> Dict[str, Any]:
+        if len(animals) > 100:
+            raise ValueError("Cannot send more than 100 animals at once")
+
+        return await self._make_request(
+            "POST",
+            "/animals/v1/home",
+            json=animals
+        )
